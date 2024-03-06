@@ -67,16 +67,16 @@ class EmployeesController < ApplicationController
     # end
 
     def calculate_tax(salary)
-        if salary <= 250000
-          0
-        elsif salary <= 500000
-          (salary - 250000) * 0.05
-        elsif salary <= 1000000
-          12500 + (salary - 500000) * 0.1
-        else
-          12500 + 50000 + (salary - 1000000) * 0.2
-        end
+      if salary <= 250000
+        0
+      elsif salary <= 500000
+        (salary - 250000) * 0.05
+      elsif salary <= 1000000
+        12500 + (salary - 500000) * 0.1
+      else
+        12500 + 50000 + (salary - 1000000) * 0.2
       end
+    end
 
     def set_employee
       @employee = Employee.find(params[:id])
