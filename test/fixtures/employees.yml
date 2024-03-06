@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  employee_id: MyString
+  first_name: MyString
+  last_name: MyString
+  email: MyString
+  phone_numbers: MyString
+  doj: 2024-03-06
+  salary: 9.99
+
+two:
+  employee_id: MyString
+  first_name: MyString
+  last_name: MyString
+  email: MyString
+  phone_numbers: MyString
+  doj: 2024-03-06
+  salary: 9.99

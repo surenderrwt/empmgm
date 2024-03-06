@@ -1,0 +1,262 @@
+  [1m[35m (175.3ms)[0m  [1m[35mCREATE DATABASE "emp_mgm_development" ENCODING = 'unicode'[0m
+  [1m[35m (149.1ms)[0m  [1m[35mCREATE DATABASE "emp_mgm_test" ENCODING = 'unicode'[0m
+  [1m[35m (10.2ms)[0m  [1m[35mCREATE TABLE "schema_migrations" ("version" character varying NOT NULL PRIMARY KEY)[0m
+  [1m[35m (2.5ms)[0m  [1m[35mCREATE TABLE "ar_internal_metadata" ("key" character varying NOT NULL PRIMARY KEY, "value" character varying, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT pg_try_advisory_lock(2279211486194302170)[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.7ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.8ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = $1 ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1[0m  [[nil, "environment"]]
+  [1m[36mActiveRecord::InternalMetadata Create (0.8ms)[0m  [1m[32mINSERT INTO "ar_internal_metadata" ("key", "value", "created_at", "updated_at") VALUES ('environment', 'development', '2024-03-06 05:57:33.115108', '2024-03-06 05:57:33.115111') RETURNING "key"[0m
+Migrating to CreateEmployees (20240306055710)
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (8.5ms)[0m  [1m[35mCREATE TABLE "employees" ("id" bigserial primary key, "employee_id" character varying, "first_name" character varying, "last_name" character varying, "email" character varying, "phone_numbers" character varying, "doj" date, "salary" decimal, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.5ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ('20240306055710') RETURNING "version"[0m
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mCOMMIT[0m
+  [1m[35m (0.6ms)[0m  [1m[34mSELECT pg_advisory_unlock(2279211486194302170)[0m
+  [1m[36mActiveRecord::SchemaMigration Load (1.3ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Started GET "/employees" for ::1 at 2024-03-06 11:42:26 +0530
+  [1m[36mActiveRecord::SchemaMigration Load (2.6ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Processing by EmployeesController#index as */*
+  [1m[36mEmployee Load (2.1ms)[0m  [1m[34mSELECT "employees".* FROM "employees"[0m
+  ↳ app/controllers/employees_controller.rb:8:in `index'
+Completed 200 OK in 43ms (Views: 5.7ms | ActiveRecord: 5.0ms | Allocations: 14696)
+
+
+Started GET "/employees/1" for ::1 at 2024-03-06 11:44:12 +0530
+Processing by EmployeesController#show as */*
+  Parameters: {"id"=>"1"}
+  [1m[36mEmployee Load (0.5ms)[0m  [1m[34mSELECT "employees".* FROM "employees" WHERE "employees"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/employees_controller.rb:44:in `set_employee'
+Completed 404 Not Found in 107ms (ActiveRecord: 39.4ms | Allocations: 3569)
+
+
+  
+ActiveRecord::RecordNotFound (Couldn't find Employee with 'id'=1):
+  
+app/controllers/employees_controller.rb:44:in `set_employee'
+Started POST "/employees" for ::1 at 2024-03-06 12:09:51 +0530
+Processing by EmployeesController#create as */*
+  Parameters: {"employee"=>{"employee_id"=>1, "first_name"=>"fn1", "last_name"=>"ln1", "email"=>"test@test.com", "phone_numbers"=>"1234567876", "doj"=>"15 march 2023", "salary"=>"20000"}}
+Completed 500 Internal Server Error in 112ms (ActiveRecord: 16.6ms | Allocations: 17892)
+
+
+  
+NoMethodError (undefined method `phone_number' for #<Employee id: nil, employee_id: "1", first_name: "fn1", last_name: "ln1", email: "test@test.com", phone_numbers: "1234567876", doj: "2023-03-15", salary: 0.2e5, created_at: nil, updated_at: nil>):
+  
+app/controllers/employees_controller.rb:20:in `create'
+Started POST "/employees" for ::1 at 2024-03-06 12:10:34 +0530
+Processing by EmployeesController#create as */*
+  Parameters: {"employee"=>{"employee_id"=>1, "first_name"=>"fn1", "last_name"=>"ln1", "email"=>"test@test.com", "phone_numbers"=>"1234567876", "doj"=>"15 march 2023", "salary"=>"20000"}}
+Completed 404 Not Found in 1ms (ActiveRecord: 0.0ms | Allocations: 132)
+
+
+  
+AbstractController::ActionNotFound (The update action could not be found for the :set_employee
+callback on EmployeesController, but it is listed in the controller's
+:only option.
+
+Raising for missing callback actions is a new default in Rails 7.1, if you'd
+like to turn this off you can delete the option from the environment configurations
+or set `config.action_controller.raise_on_missing_callback_actions` to `false`.
+):
+  
+actionpack (7.1.3.2) lib/abstract_controller/callbacks.rb:62:in `match?'
+activesupport (7.1.3.2) lib/active_support/callbacks.rb:426:in `block in make_lambda'
+activesupport (7.1.3.2) lib/active_support/callbacks.rb:182:in `block (2 levels) in halting_and_conditional'
+activesupport (7.1.3.2) lib/active_support/callbacks.rb:182:in `all?'
+activesupport (7.1.3.2) lib/active_support/callbacks.rb:182:in `block in halting_and_conditional'
+activesupport (7.1.3.2) lib/active_support/callbacks.rb:598:in `block in invoke_before'
+activesupport (7.1.3.2) lib/active_support/callbacks.rb:598:in `each'
+activesupport (7.1.3.2) lib/active_support/callbacks.rb:598:in `invoke_before'
+activesupport (7.1.3.2) lib/active_support/callbacks.rb:109:in `run_callbacks'
+actionpack (7.1.3.2) lib/abstract_controller/callbacks.rb:258:in `process_action'
+actionpack (7.1.3.2) lib/action_controller/metal/rescue.rb:25:in `process_action'
+actionpack (7.1.3.2) lib/action_controller/metal/instrumentation.rb:74:in `block in process_action'
+activesupport (7.1.3.2) lib/active_support/notifications.rb:206:in `block in instrument'
+activesupport (7.1.3.2) lib/active_support/notifications/instrumenter.rb:58:in `instrument'
+activesupport (7.1.3.2) lib/active_support/notifications.rb:206:in `instrument'
+actionpack (7.1.3.2) lib/action_controller/metal/instrumentation.rb:73:in `process_action'
+actionpack (7.1.3.2) lib/action_controller/metal/params_wrapper.rb:261:in `process_action'
+activerecord (7.1.3.2) lib/active_record/railties/controller_runtime.rb:32:in `process_action'
+actionpack (7.1.3.2) lib/abstract_controller/base.rb:160:in `process'
+actionpack (7.1.3.2) lib/action_controller/metal.rb:227:in `dispatch'
+actionpack (7.1.3.2) lib/action_controller/metal.rb:309:in `dispatch'
+actionpack (7.1.3.2) lib/action_dispatch/routing/route_set.rb:49:in `dispatch'
+actionpack (7.1.3.2) lib/action_dispatch/routing/route_set.rb:32:in `serve'
+actionpack (7.1.3.2) lib/action_dispatch/journey/router.rb:51:in `block in serve'
+actionpack (7.1.3.2) lib/action_dispatch/journey/router.rb:131:in `block in find_routes'
+actionpack (7.1.3.2) lib/action_dispatch/journey/router.rb:124:in `each'
+actionpack (7.1.3.2) lib/action_dispatch/journey/router.rb:124:in `find_routes'
+actionpack (7.1.3.2) lib/action_dispatch/journey/router.rb:32:in `serve'
+actionpack (7.1.3.2) lib/action_dispatch/routing/route_set.rb:882:in `call'
+rack (3.0.9.1) lib/rack/etag.rb:29:in `call'
+rack (3.0.9.1) lib/rack/conditional_get.rb:43:in `call'
+rack (3.0.9.1) lib/rack/head.rb:15:in `call'
+activerecord (7.1.3.2) lib/active_record/migration.rb:655:in `call'
+actionpack (7.1.3.2) lib/action_dispatch/middleware/callbacks.rb:29:in `block in call'
+activesupport (7.1.3.2) lib/active_support/callbacks.rb:101:in `run_callbacks'
+actionpack (7.1.3.2) lib/action_dispatch/middleware/callbacks.rb:28:in `call'
+actionpack (7.1.3.2) lib/action_dispatch/middleware/executor.rb:14:in `call'
+actionpack (7.1.3.2) lib/action_dispatch/middleware/actionable_exceptions.rb:16:in `call'
+actionpack (7.1.3.2) lib/action_dispatch/middleware/debug_exceptions.rb:29:in `call'
+actionpack (7.1.3.2) lib/action_dispatch/middleware/show_exceptions.rb:31:in `call'
+railties (7.1.3.2) lib/rails/rack/logger.rb:37:in `call_app'
+railties (7.1.3.2) lib/rails/rack/logger.rb:24:in `block in call'
+activesupport (7.1.3.2) lib/active_support/tagged_logging.rb:135:in `block in tagged'
+activesupport (7.1.3.2) lib/active_support/tagged_logging.rb:39:in `tagged'
+activesupport (7.1.3.2) lib/active_support/tagged_logging.rb:135:in `tagged'
+activesupport (7.1.3.2) lib/active_support/broadcast_logger.rb:240:in `method_missing'
+railties (7.1.3.2) lib/rails/rack/logger.rb:24:in `call'
+actionpack (7.1.3.2) lib/action_dispatch/middleware/remote_ip.rb:92:in `call'
+actionpack (7.1.3.2) lib/action_dispatch/middleware/request_id.rb:28:in `call'
+rack (3.0.9.1) lib/rack/runtime.rb:24:in `call'
+activesupport (7.1.3.2) lib/active_support/cache/strategy/local_cache_middleware.rb:29:in `call'
+actionpack (7.1.3.2) lib/action_dispatch/middleware/server_timing.rb:59:in `block in call'
+actionpack (7.1.3.2) lib/action_dispatch/middleware/server_timing.rb:24:in `collect_events'
+actionpack (7.1.3.2) lib/action_dispatch/middleware/server_timing.rb:58:in `call'
+actionpack (7.1.3.2) lib/action_dispatch/middleware/executor.rb:14:in `call'
+actionpack (7.1.3.2) lib/action_dispatch/middleware/static.rb:25:in `call'
+rack (3.0.9.1) lib/rack/sendfile.rb:114:in `call'
+actionpack (7.1.3.2) lib/action_dispatch/middleware/host_authorization.rb:141:in `call'
+railties (7.1.3.2) lib/rails/engine.rb:536:in `call'
+puma (6.4.2) lib/puma/configuration.rb:272:in `call'
+puma (6.4.2) lib/puma/request.rb:100:in `block in handle_request'
+puma (6.4.2) lib/puma/thread_pool.rb:378:in `with_force_shutdown'
+puma (6.4.2) lib/puma/request.rb:99:in `handle_request'
+puma (6.4.2) lib/puma/server.rb:464:in `process_client'
+puma (6.4.2) lib/puma/server.rb:245:in `block in run'
+puma (6.4.2) lib/puma/thread_pool.rb:155:in `block in spawn_thread'
+Started POST "/employees" for ::1 at 2024-03-06 12:11:35 +0530
+Processing by EmployeesController#create as */*
+  Parameters: {"employee"=>{"employee_id"=>1, "first_name"=>"fn1", "last_name"=>"ln1", "email"=>"test@test.com", "phone_numbers"=>"1234567876", "doj"=>"15 march 2023", "salary"=>"20000"}}
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/controllers/employees_controller.rb:20:in `create'
+  [1m[36mEmployee Create (6.9ms)[0m  [1m[32mINSERT INTO "employees" ("employee_id", "first_name", "last_name", "email", "phone_numbers", "doj", "salary", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING "id"[0m  [["employee_id", "1"], ["first_name", "fn1"], ["last_name", "ln1"], ["email", "test@test.com"], ["phone_numbers", "1234567876"], ["doj", "2023-03-15"], ["salary", "20000.0"], ["created_at", "2024-03-06 06:41:35.387540"], ["updated_at", "2024-03-06 06:41:35.387540"]]
+  ↳ app/controllers/employees_controller.rb:20:in `create'
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/controllers/employees_controller.rb:20:in `create'
+Completed 201 Created in 99ms (Views: 2.6ms | ActiveRecord: 54.9ms | Allocations: 6975)
+
+
+Started GET "/employees/1" for ::1 at 2024-03-06 12:12:44 +0530
+Processing by EmployeesController#show as */*
+  Parameters: {"id"=>"1"}
+  [1m[36mEmployee Load (0.9ms)[0m  [1m[34mSELECT "employees".* FROM "employees" WHERE "employees"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/employees_controller.rb:78:in `set_employee'
+Completed 200 OK in 11ms (Views: 0.9ms | ActiveRecord: 1.3ms | Allocations: 903)
+
+
+Started GET "/employees/1" for ::1 at 2024-03-06 12:15:07 +0530
+Processing by EmployeesController#show as */*
+  Parameters: {"id"=>"1"}
+  [1m[36mEmployee Load (0.3ms)[0m  [1m[34mSELECT "employees".* FROM "employees" WHERE "employees"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/employees_controller.rb:79:in `set_employee'
+Completed 200 OK in 21ms (Views: 0.2ms | ActiveRecord: 12.1ms | Allocations: 5600)
+
+
+Started POST "/employees" for ::1 at 2024-03-06 12:15:56 +0530
+Processing by EmployeesController#create as */*
+  Parameters: {"employee"=>{"employee_id"=>"tst2", "first_name"=>"fn1", "last_name"=>"ln1", "email"=>"test@test.com", "phone_numbers"=>"1234567876", "doj"=>"15 march 2023", "salary"=>"50000"}}
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/controllers/employees_controller.rb:21:in `create'
+  [1m[36mEmployee Create (3.3ms)[0m  [1m[32mINSERT INTO "employees" ("employee_id", "first_name", "last_name", "email", "phone_numbers", "doj", "salary", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING "id"[0m  [["employee_id", "tst2"], ["first_name", "fn1"], ["last_name", "ln1"], ["email", "test@test.com"], ["phone_numbers", "1234567876"], ["doj", "2023-03-15"], ["salary", "50000.0"], ["created_at", "2024-03-06 06:45:56.158489"], ["updated_at", "2024-03-06 06:45:56.158489"]]
+  ↳ app/controllers/employees_controller.rb:21:in `create'
+  [1m[36mTRANSACTION (10.8ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/controllers/employees_controller.rb:21:in `create'
+Completed 201 Created in 49ms (Views: 0.9ms | ActiveRecord: 14.6ms | Allocations: 2049)
+
+
+Started GET "/employees/2" for ::1 at 2024-03-06 12:16:10 +0530
+Processing by EmployeesController#show as */*
+  Parameters: {"id"=>"2"}
+  [1m[36mEmployee Load (2.1ms)[0m  [1m[34mSELECT "employees".* FROM "employees" WHERE "employees"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  ↳ app/controllers/employees_controller.rb:79:in `set_employee'
+Completed 200 OK in 16ms (Views: 0.9ms | ActiveRecord: 2.0ms | Allocations: 533)
+
+
+Started GET "/employees/2" for ::1 at 2024-03-06 12:17:19 +0530
+Processing by EmployeesController#show as */*
+  Parameters: {"id"=>"2"}
+  [1m[36mEmployee Load (0.5ms)[0m  [1m[34mSELECT "employees".* FROM "employees" WHERE "employees"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  ↳ app/controllers/employees_controller.rb:77:in `set_employee'
+Completed 200 OK in 27ms (Views: 0.2ms | ActiveRecord: 7.3ms | Allocations: 5610)
+
+
+Started GET "/employees/1" for ::1 at 2024-03-06 12:17:27 +0530
+Processing by EmployeesController#show as */*
+  Parameters: {"id"=>"1"}
+  [1m[36mEmployee Load (0.7ms)[0m  [1m[34mSELECT "employees".* FROM "employees" WHERE "employees"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/employees_controller.rb:77:in `set_employee'
+Completed 200 OK in 8ms (Views: 0.5ms | ActiveRecord: 0.7ms | Allocations: 532)
+
+
+Started POST "/employees" for ::1 at 2024-03-06 12:19:14 +0530
+Processing by EmployeesController#create as */*
+  Parameters: {"employee"=>{"employee_id"=>"tst23", "first_name"=>"fn13", "last_name"=>"ln13", "email"=>"test2@test.com", "phone_numbers"=>"1234567876", "doj"=>"15 may ss2023", "salary"=>"50000"}}
+Completed 422 Unprocessable Entity in 26ms (Views: 20.8ms | ActiveRecord: 0.0ms | Allocations: 2845)
+
+
+Started POST "/employees" for ::1 at 2024-03-06 12:19:23 +0530
+Processing by EmployeesController#create as */*
+  Parameters: {"employee"=>{"employee_id"=>"tst23", "first_name"=>"fn13", "last_name"=>"ln13", "email"=>"test2@test.com", "phone_numbers"=>"1234567876", "doj"=>"15 maay 2023", "salary"=>"50000"}}
+Completed 422 Unprocessable Entity in 7ms (Views: 1.3ms | ActiveRecord: 0.0ms | Allocations: 614)
+
+
+Started POST "/employees" for ::1 at 2024-03-06 12:19:32 +0530
+Processing by EmployeesController#create as */*
+  Parameters: {"employee"=>{"employee_id"=>"tst23", "first_name"=>"fn13", "last_name"=>"ln13", "email"=>"test2@test.com", "phone_numbers"=>"1234567876", "doj"=>"15 may 2023", "salary"=>"50000"}}
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/controllers/employees_controller.rb:33:in `create'
+  [1m[36mEmployee Create (3.9ms)[0m  [1m[32mINSERT INTO "employees" ("employee_id", "first_name", "last_name", "email", "phone_numbers", "doj", "salary", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING "id"[0m  [["employee_id", "tst23"], ["first_name", "fn13"], ["last_name", "ln13"], ["email", "test2@test.com"], ["phone_numbers", "1234567876"], ["doj", "2023-05-15"], ["salary", "50000.0"], ["created_at", "2024-03-06 06:49:32.438782"], ["updated_at", "2024-03-06 06:49:32.438782"]]
+  ↳ app/controllers/employees_controller.rb:33:in `create'
+  [1m[36mTRANSACTION (1.9ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/controllers/employees_controller.rb:33:in `create'
+Completed 201 Created in 15ms (Views: 1.2ms | ActiveRecord: 6.2ms | Allocations: 1916)
+
+
+Started GET "/employees" for ::1 at 2024-03-06 12:19:47 +0530
+Processing by EmployeesController#index as */*
+  [1m[36mEmployee Load (0.9ms)[0m  [1m[34mSELECT "employees".* FROM "employees"[0m
+  ↳ app/controllers/employees_controller.rb:8:in `index'
+Completed 200 OK in 5ms (Views: 3.8ms | ActiveRecord: 0.9ms | Allocations: 886)
+
+
+Started GET "/employees/3" for ::1 at 2024-03-06 12:20:02 +0530
+Processing by EmployeesController#show as */*
+  Parameters: {"id"=>"3"}
+  [1m[36mEmployee Load (0.7ms)[0m  [1m[34mSELECT "employees".* FROM "employees" WHERE "employees"."id" = $1 LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  ↳ app/controllers/employees_controller.rb:77:in `set_employee'
+Completed 200 OK in 7ms (Views: 0.4ms | ActiveRecord: 0.7ms | Allocations: 532)
+
+
+Started POST "/employees" for ::1 at 2024-03-06 12:20:40 +0530
+Processing by EmployeesController#create as */*
+  Parameters: {"employee"=>{"employee_id"=>"tst23", "first_name"=>"fn113", "last_name"=>"ln13", "email"=>"test2@test.com", "phone_numbers"=>"1234567876", "doj"=>"15 may 2023", "salary"=>"500000"}}
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/controllers/employees_controller.rb:33:in `create'
+  [1m[36mEmployee Create (2.3ms)[0m  [1m[32mINSERT INTO "employees" ("employee_id", "first_name", "last_name", "email", "phone_numbers", "doj", "salary", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING "id"[0m  [["employee_id", "tst23"], ["first_name", "fn113"], ["last_name", "ln13"], ["email", "test2@test.com"], ["phone_numbers", "1234567876"], ["doj", "2023-05-15"], ["salary", "500000.0"], ["created_at", "2024-03-06 06:50:40.735658"], ["updated_at", "2024-03-06 06:50:40.735658"]]
+  ↳ app/controllers/employees_controller.rb:33:in `create'
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/controllers/employees_controller.rb:33:in `create'
+Completed 201 Created in 9ms (Views: 0.9ms | ActiveRecord: 3.1ms | Allocations: 1828)
+
+
+Started POST "/employees" for ::1 at 2024-03-06 12:22:54 +0530
+Processing by EmployeesController#create as */*
+  Parameters: {"employee"=>{"employee_id"=>"tst23", "first_name"=>"fn113", "last_name"=>"ln13", "email"=>"test2@test.com", "phone_numbers"=>"1234567876", "doj"=>"15 may 2023", "salary"=>"500000"}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/controllers/employees_controller.rb:33:in `create'
+  [1m[36mEmployee Exists? (4.0ms)[0m  [1m[34mSELECT 1 AS one FROM "employees" WHERE "employees"."employee_id" = $1 LIMIT $2[0m  [["employee_id", "tst23"], ["LIMIT", 1]]
+  ↳ app/controllers/employees_controller.rb:33:in `create'
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[31mROLLBACK[0m
+  ↳ app/controllers/employees_controller.rb:33:in `create'
+Completed 422 Unprocessable Entity in 47ms (Views: 1.3ms | ActiveRecord: 33.8ms | Allocations: 6907)
+
+
+Started GET "/employees/3" for ::1 at 2024-03-06 12:33:40 +0530
+Processing by EmployeesController#show as */*
+  Parameters: {"id"=>"3"}
+  [1m[36mEmployee Load (1.3ms)[0m  [1m[34mSELECT "employees".* FROM "employees" WHERE "employees"."id" = $1 LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  ↳ app/controllers/employees_controller.rb:83:in `set_employee'
+Completed 200 OK in 89ms (Views: 0.2ms | ActiveRecord: 51.7ms | Allocations: 8207)
+
+
